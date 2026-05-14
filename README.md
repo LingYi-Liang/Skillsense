@@ -10,7 +10,7 @@ SkillSense gives you a local receipt. It watches agent logs and turns them into 
 
 No cloud tracing is required. No API key is required. Your generated state stays under `.skillsense/`, which is ignored by Git.
 
-![SkillSense dashboard](assets/skillsense-dashboard.png)
+![SkillSense concept: local evidence for agent skills](assets/skillsense-concept.png)
 
 ## Why SkillSense Exists
 
@@ -56,6 +56,8 @@ http://127.0.0.1:8765/dashboard.html
 `skillsense serve --interval 2` serves the dashboard at `http://127.0.0.1:8765/dashboard.html`. That address is localhost: it points to the machine running SkillSense, not to a public server.
 
 The monitor is the main product surface. It shows recent turns, the evidence tied to those turns, and a folded `Trigger Diagnostics` area for each turn. Diagnostics use the local skill index and existing evidence only; they do not call an LLM.
+
+![SkillSense live dashboard with demo evidence](assets/skillsense-dashboard.png)
 
 Dashboard hierarchy:
 

@@ -1,65 +1,61 @@
 # SkillSense
 
-SkillSense is a local live HUD for agent skill evidence. Start it with `skillsense serve`, leave the dashboard open, and watch each agent turn update from local logs.
+**See what skills your AI coding agent actually used.**
 
-It tracks `loaded`, `read`, `invoked`, `suggested`, and `not detected` states without calling an LLM or sending your chat anywhere.
+AI coding agents are starting to rely on skills, rules, local instructions, and tool-specific workflows. That is great when everything works. It is maddening when a turn goes sideways and you are left asking the real question:
 
-SkillSense 的重点很简单：实时看每一轮 Agent 的 skill 证据状态。它默认本地运行，不需要 API key，也不会把状态塞进每轮聊天正文。
+Did the agent actually use the thing I wrote for it?
+
+SkillSense gives you a local receipt. It watches agent logs and turns them into a live evidence timeline, so you can see whether a skill was `loaded`, `read`, `invoked`, merely `suggested`, or `not detected`.
+
+No cloud tracing is required. No API key is required. Your generated state stays under `.skillsense/`, which is ignored by Git.
+
+![SkillSense dashboard](assets/skillsense-dashboard.png)
+
+## Why SkillSense Exists
+
+Most agent misses are not dramatic. They are quiet.
+
+A skill was available, but never read. A `SKILL.md` was opened, but no real invocation happened. Two skills overlapped and made the routing muddy. A better workflow existed, but the agent answered from the general context instead.
+
+SkillSense is built for that moment. It does not try to be another agent. It sits beside the agent and shows the evidence you would otherwise have to dig out of local logs by hand.
 
 ## Try It In 60 Seconds
 
 ```bash
-git clone <your-fork-or-repo-url>
-cd SkillSense
+git clone https://github.com/LingYi-Liang/Skillsense.git
+cd Skillsense
 pip install -e .
 skillsense scan
 skillsense serve --interval 2
 ```
 
-Open:
+Then open:
 
 ```text
 http://127.0.0.1:8765/dashboard.html
 ```
 
-`127.0.0.1` means localhost. It is the user's own machine, not the project author's IP address, and it is not exposed to the internet by default.
+`127.0.0.1` is your own machine. The live dashboard is local by default and is not exposed to the internet.
 
-Use the HTTP dashboard for live updates. Opening `.skillsense/dashboard.html` directly with `file://` gives you a static report.
+## What You Get
 
-Network metadata is off by default. The live monitor, scan, report, and generic evidence adapter all work locally.
-
-## Product Preview
+| Surface | What it helps you see |
+| --- | --- |
+| Live monitor | Recent agent turns and the skill evidence attached to them. |
+| Evidence timeline | Whether a skill was visible, read, invoked, inferred, suggested, or missing. |
+| Local skill index | Project, Codex, Claude Code, and example skills found on this machine. |
+| Intervention queue | Missed skills, broad descriptions, trigger overlap, and suspicious routing. |
+| Generic adapter | Cursor, VS Code, or custom agents can feed JSONL evidence into the same view. |
+| Language switcher | English, Chinese, Japanese, Korean, Spanish, and French dashboard copy. |
 
 ![SkillSense statusline](assets/skillsense-statusline.png)
 
-![SkillSense dashboard](assets/skillsense-dashboard.png)
-
-These are normal PNG files under `assets/`. GitHub will render them when the `assets/` directory is included in the repository. They are only preview images; the CLI does not need them to run.
-
-## What You See
-
-| State | Meaning |
-| --- | --- |
-| `loaded` | The platform made a skill visible to the agent. Useful, but still just availability. |
-| `read` | Local logs show a `SKILL.md` was opened. Stronger evidence than `loaded`. |
-| `invoked` | The platform logged an explicit skill invocation event. This is the strongest signal. |
-| `inferred` | SkillSense can only guess from traces such as commands, output, or file changes. |
-| `suggested` | SkillSense thinks the skill may fit the prompt. This is a hint, not usage proof. |
-| `not detected` | No local evidence was found. SkillSense leaves it unknown. |
-
-## Accuracy Notice
-
-If the platform does not expose real skill invocation logs, SkillSense cannot know with 100% certainty whether a skill was used. It separates confirmed evidence from inferred evidence.
-
-如果平台不暴露真实 skill 调用日志，SkillSense 不能 100% 确认某个 skill 是否真的被使用。它会明确区分“已确认使用”和“疑似使用”。
-
 ## Live Skill Monitor
 
-`skillsense serve --interval 2` serves the dashboard from `http://127.0.0.1:8765/dashboard.html`. That address is local to whoever runs the command. The page polls lightly, so opening panels, selecting text, scrolling, and changing language should not be interrupted by refreshes.
+`skillsense serve --interval 2` serves the dashboard at `http://127.0.0.1:8765/dashboard.html`. That address is localhost: it points to the machine running SkillSense, not to a public server.
 
-The monitor is the main product surface. It shows recent turns, evidence tied to those turns, and a folded `Trigger Diagnostics` area for each turn. That diagnostic area uses the local skill index and existing evidence only; it does not call an LLM.
-
-The dashboard supports English, Chinese, Japanese, Korean, Spanish, and French. English mode stays English-only. Other languages show translated UI copy with English kept where accuracy is useful. Timestamps render in the browser’s local timezone.
+The monitor is the main product surface. It shows recent turns, the evidence tied to those turns, and a folded `Trigger Diagnostics` area for each turn. Diagnostics use the local skill index and existing evidence only; they do not call an LLM.
 
 Dashboard hierarchy:
 
@@ -71,29 +67,63 @@ Dashboard hierarchy:
 | Reference | `Local Skill Index` |
 | Advanced | policy and privacy settings |
 
-`Suggested` and `Recommended` are supporting signals. They help explain what might be useful, but the live evidence stream is the main promise.
+## Supported
 
-## Install And Run
+| Area | Support |
+| --- | --- |
+| Runtime | Python 3.10+ |
+| Package | `skillsense` |
+| Built-in adapters | Codex local logs, Claude Code project logs, generic JSONL evidence |
+| Dashboard languages | English, Chinese, Japanese, Korean, Spanish, French |
+| Network use | Off by default; optional metadata enrichment only |
+| Runtime dependencies | None |
+| License | MIT |
 
-```bash
-pip install -e .
-skillsense scan
-skillsense serve --interval 2
+## Accuracy Notice
+
+Evidence, not vibes. SkillSense separates different levels of proof instead of pretending they are the same thing.
+
+| State | Meaning |
+| --- | --- |
+| `loaded` | The platform made a skill visible to the agent. Useful, but still just availability. |
+| `read` | Local logs show a `SKILL.md` file was opened. Stronger evidence than `loaded`. |
+| `invoked` | The platform logged an explicit skill invocation event. This is the strongest signal. |
+| `inferred` | SkillSense can only guess from traces such as commands, output, or file changes. |
+| `suggested` | SkillSense thinks a skill may fit the prompt, but no usage evidence was found. |
+| `not detected` | No local evidence was found. SkillSense leaves it unknown. |
+
+If a platform does not expose real invocation logs, SkillSense will say so. It is better to show a weaker signal honestly than to make a confident claim from thin air.
+
+## Privacy Model
+
+Generated state lives in `.skillsense/`:
+
+```text
+.skillsense/skills_index.json
+.skillsense/state.json
+.skillsense/interventions.json
+.skillsense/report.md
+.skillsense/dashboard.html
+.skillsense/config.json
+.skillsense/metadata_cache.json
 ```
 
-For quick CLI checks:
+That folder is ignored by Git. It may contain local paths and generated reports, so do not manually upload it to GitHub.
 
-```bash
-python -m skillsense.cli scan
-python -m skillsense.cli list
-python -m skillsense.cli suggest "帮我检查 README 能不能跑"
-python -m skillsense.cli evidence
-python -m skillsense.cli status
-python -m skillsense.cli report
-python -m skillsense.cli diagnose
+Turn text is hidden by default:
+
+```json
+{
+  "privacy": {
+    "store_turn_text": false,
+    "show_turn_text": false
+  }
+}
 ```
 
-## CLI Commands
+The dashboard can still show evidence without storing your chat text. Enable text storage only when you want local debugging details.
+
+## CLI
 
 ```bash
 skillsense scan
@@ -101,11 +131,17 @@ skillsense list
 skillsense suggest "<user prompt>"
 skillsense evidence
 skillsense status
-skillsense watch --interval 2
 skillsense serve --interval 2
-skillsense reset-state
 skillsense report
 skillsense diagnose
+```
+
+<details>
+<summary>More commands</summary>
+
+```bash
+skillsense watch --interval 2
+skillsense reset-state
 skillsense interventions
 skillsense propose-fix <intervention-id>
 skillsense apply-fix <intervention-id> --yes
@@ -128,6 +164,8 @@ skillsense config set privacy.show_turn_text true
 skillsense config set privacy.show_turn_text false
 ```
 
+</details>
+
 ## Other Agent Platforms
 
 Codex and Claude Code adapters read their local logs directly. Other tools can write newline-delimited JSON into:
@@ -143,67 +181,7 @@ Example:
 {"platform":"cursor","turn_id":"turn-1","skill_name":"readme-runner","event_type":"read","certainty":"confirmed","source":"generic_jsonl","snippet":"SKILL.md opened"}
 ```
 
-Use `invoked` only when the platform exposes a real invocation event. For schema details and Cursor / VS Code / custom agent examples, see [docs/generic-evidence-adapter.md](docs/generic-evidence-adapter.md). Sample files live in [examples/generic_evidence](examples/generic_evidence).
-
-## Evidence Files
-
-SkillSense writes generated state under `.skillsense/`:
-
-```text
-.skillsense/skills_index.json
-.skillsense/state.json
-.skillsense/interventions.json
-.skillsense/report.md
-.skillsense/dashboard.html
-.skillsense/config.json
-.skillsense/metadata_cache.json
-```
-
-`.skillsense/` is ignored by Git. A fresh clone can regenerate it with `skillsense scan` and `skillsense report`.
-
-## Privacy
-
-Generated state hides turn text by default:
-
-```json
-{
-  "privacy": {
-    "store_turn_text": false,
-    "show_turn_text": false
-  }
-}
-```
-
-The timeline can still show evidence without storing chat text. Enable text storage only when you need local debugging.
-
-## Intervention Queue
-
-`skillsense diagnose` creates `.skillsense/interventions.json` and fills the dashboard `Intervention Queue`.
-
-Interventions are review items. They can point out trigger overlap, a missed suggested skill, a possibly wrong `SKILL.md` read, broad descriptions, narrow descriptions, or error-like assistant output when local turn text is available.
-
-SkillSense proposes changes; it does not quietly edit `SKILL.md`.
-
-```bash
-skillsense propose-fix <intervention-id>
-skillsense apply-fix <intervention-id> --yes
-```
-
-The dashboard has the same review flow with `View proposal`, `Apply after review`, and `Dismiss`.
-
-## Network
-
-SkillSense runs offline by default:
-
-```json
-{
-  "network": {
-    "enabled": false
-  }
-}
-```
-
-Turning network on allows optional GitHub metadata enrichment for skills with a `repo_url`, such as stars and maintenance status. If metadata cannot be fetched, the dashboard shows `unknown`.
+Use `invoked` only when the platform exposes a real invocation event. For schema details and Cursor, VS Code, or custom agent examples, see [docs/generic-evidence-adapter.md](docs/generic-evidence-adapter.md).
 
 ## Scan Locations
 
@@ -218,7 +196,7 @@ Turning network on allows optional GitHub metadata enrichment for skills with a 
 
 `./examples/` is included so a fresh checkout can demonstrate `skillsense scan` immediately.
 
-## Adapter Strategy
+## Adapter Status
 
 | Adapter | Status |
 | --- | --- |
@@ -227,3 +205,9 @@ Turning network on allows optional GitHub metadata enrichment for skills with a 
 | Claude Code project logs | shipped |
 | Cursor / VS Code sidebar | later |
 | Platform-level blocking | later, only if a platform exposes the hook |
+
+## The Short Version
+
+If you are writing skills for agents, you need a way to tell the difference between "the agent had access to this" and "the agent actually used it."
+
+That difference is the whole point of SkillSense.

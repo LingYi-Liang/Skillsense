@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "skillsense"
 version = "0.1.0"
-description = "A low-noise observability and recommendation layer for Agent Skills."
+description = "Local-first observability dashboard for AI agent skill evidence."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "SkillSense" }]
 license = { text = "MIT" }
-keywords = ["agent", "skills", "cli", "observability", "recommendation"]
+keywords = ["ai-agents", "agent-skills", "llm-agents", "codex", "claude-code", "observability", "developer-tools", "dashboard", "privacy", "local-first", "cli"]
 dependencies = []
 
 [project.scripts]

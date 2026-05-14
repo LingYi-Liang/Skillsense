@@ -1,0 +1,11 @@
+{
+  "language": "zh-CN",
+  "network": {
+    "enabled": false
+  },
+  "preferences": {
+    "prefer": ["readme-runner"],
+    "mute": [],
+    "ask_before": []
+  }
+}

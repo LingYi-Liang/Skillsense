@@ -1,0 +1,3 @@
+{"platform":"cursor","turn_id":"cursor-001","timestamp":"2026-05-14T10:00:00+08:00"}
+{"platform":"cursor","turn_id":"cursor-001","skill_name":"readme-runner","event_type":"loaded","certainty":"confirmed","source":"cursor_extension","snippet":"Skill listed in agent context"}
+{"platform":"cursor","turn_id":"cursor-001","skill_name":"readme-runner","event_type":"read","certainty":"confirmed","source":"cursor_extension","path":".cursor/skills/readme-runner/SKILL.md","snippet":"SKILL.md opened"}

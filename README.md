@@ -23,6 +23,14 @@ SkillSense is built for that moment. It does not try to be another agent. It sit
 ## Try It In 60 Seconds
 
 ```bash
+pip install skillsense
+skillsense scan
+skillsense serve --interval 2
+```
+
+For local development:
+
+```bash
 git clone https://github.com/LingYi-Liang/Skillsense.git
 cd Skillsense
 pip install -e .
